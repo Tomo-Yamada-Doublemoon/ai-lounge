@@ -8,10 +8,16 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=Noto+Serif+JP:wght@400;700&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --bg-warm: #fdfbf7;
+            --stone-700: #44403c;
+            --orange-primary: #ea580c;
+        }
         body {
             font-family: 'Noto Sans JP', sans-serif;
-            background-color: #fdfbf7; /* Warm off-white */
-            color: #44403c; /* Stone 700 */
+            background-color: var(--bg-warm);
+            color: var(--stone-700);
+            scroll-behavior: smooth;
         }
         h1, h2, h3, .serif {
             font-family: 'Noto Serif JP', serif;
@@ -26,581 +32,432 @@
             max-height: 400px;
         }
         @media (max-width: 640px) {
-            .chart-container {
-                height: 300px;
-            }
+            .chart-container { height: 300px; }
         }
-        .chat-bubble {
-            position: relative;
-            padding: 1.5rem;
-            border-radius: 1rem;
-            margin-bottom: 1rem;
-            transition: all 0.3s ease;
+        .chat-scroll::-webkit-scrollbar { width: 4px; }
+        .chat-scroll::-webkit-scrollbar-track { background: transparent; }
+        .chat-scroll::-webkit-scrollbar-thumb { background: #d6d3d1; border-radius: 10px; }
+        
+        .themed-profile-img {
+            filter: sepia(0.2) contrast(1.05) brightness(1.05) saturate(0.9);
+            transition: all 0.5s ease;
         }
-        .chat-bubble::after {
-            content: '';
-            position: absolute;
-            width: 0;
-            height: 0;
-            border-style: solid;
+        
+        .typing-dots span {
+            animation: blink 1.4s infinite both;
+            height: 6px; width: 6px;
+            background-color: #a8a29e;
+            display: inline-block;
+            border-radius: 50%;
+            margin: 0 1px;
         }
-        /* Custom scrollbar for chat area */
-        .chat-scroll::-webkit-scrollbar {
-            width: 6px;
-        }
-        .chat-scroll::-webkit-scrollbar-track {
-            background: #f1f1f1; 
-        }
-        .chat-scroll::-webkit-scrollbar-thumb {
-            background: #d6d3d1; 
-            border-radius: 3px;
-        }
+        .typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes blink { 0% { opacity: .2; } 20% { opacity: 1; } 100% { opacity: .2; } }
     </style>
     <!-- Chosen Palette: Warm Latte & Muted Teal (Relaxing Lounge Theme) -->
     <!-- Application Structure Plan: 
-         1. Hero Section: Emotional hook and title.
-         2. Concept Interactive (Radar Chart): Visualizing the shift from "Tool" (Efficiency) to "Partner" (Empathy/Creativity).
-         3. Experience Simulation (Chat Demo): Interactive comparison of "Tool AI" vs "Partner AI" responses to show concrete value.
-         4. Event Menu (Timeline): Vertical card layout explaining the session flow.
-         5. Host Profile: Credibility and atmosphere.
-         6. Interactive Registration: A form that simulates the "Magic Question" to engage users immediately.
-    -->
-    <!-- Visualization & Content Choices: 
-         1. Radar Chart (Chart.js): To compare attributes like Efficiency vs. Empathy. Interactive toggle updates the dataset. Goal: Change mindset.
-         2. Chat Simulation (Vanilla JS): To demonstrate the "Partner" experience. User clicks scenario -> Text updates. Goal: Inform/Persuade.
-         3. Timeline/Cards (HTML/Tailwind): To organize the agenda. Goal: Organize.
-         4. Registration Form (HTML/JS): To capture interest. Goal: Action.
+         - Updated strings for Hero, Concept, and Profile as per request.
+         - Integrated "mailto" logic for form submission.
+         - Fixed Top Nav logo to scroll to top.
+         - Added chart interaction guidance.
     -->
     <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
 </head>
 <body class="antialiased selection:bg-orange-100 selection:text-orange-900">
 
     <!-- Navigation -->
-    <nav class="sticky top-0 z-50 bg-[#fdfbf7]/90 backdrop-blur-sm border-b border-stone-200">
+    <nav class="sticky top-0 z-50 bg-[#fdfbf7]/90 backdrop-blur-md border-b border-stone-100">
         <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-16 items-center">
-                <div class="serif text-xl font-bold text-stone-700">AI Lounge</div>
-                <div class="hidden md:flex space-x-8 text-sm text-stone-600">
-                    <a href="#concept" class="hover:text-orange-600 transition-colors">コンセプト</a>
-                    <a href="#experience" class="hover:text-orange-600 transition-colors">体験する</a>
-                    <a href="#menu" class="hover:text-orange-600 transition-colors">メニュー</a>
-                    <a href="#host" class="hover:text-orange-600 transition-colors">プロフィール</a>
+                <!-- Logo clicks back to top -->
+                <a href="#" class="serif text-xl font-bold text-stone-700 tracking-tighter hover:text-orange-700 transition-colors">AI Lounge</a>
+                <div class="hidden md:flex space-x-8 text-sm font-medium text-stone-500">
+                    <a href="#overview" class="hover:text-orange-700">開催概要</a>
+                    <a href="#concept" class="hover:text-orange-700">コンセプト</a>
+                    <a href="#experience" class="hover:text-orange-700">体験する</a>
+                    <a href="#menu" class="hover:text-orange-700">メニュー</a>
                 </div>
-                <button onclick="document.getElementById('register').scrollIntoView({behavior: 'smooth'})" class="bg-stone-800 text-white px-5 py-2 rounded-full text-sm hover:bg-stone-700 transition-colors shadow-lg">
-                    お席を予約する
+                <button onclick="document.getElementById('register').scrollIntoView({behavior: 'smooth'})" class="bg-stone-800 text-white px-6 py-2 rounded-full text-sm font-bold hover:bg-stone-700 transition shadow-lg">
+                    お席を予約
                 </button>
             </div>
         </div>
     </nav>
 
     <!-- Hero Section -->
-    <header class="relative overflow-hidden bg-orange-50/50 py-20 sm:py-32">
-        <div class="absolute top-0 left-0 w-full h-full opacity-10 bg-[url('https://www.transparenttextures.com/patterns/paper.png')]"></div>
-        <div class="max-w-4xl mx-auto px-4 text-center relative z-10">
-            <span class="inline-block py-1 px-3 rounded-full bg-orange-100 text-orange-800 text-xs font-semibold tracking-wide mb-6">オンライン座談会</span>
+    <header class="relative bg-orange-50/30 pt-24 pb-16 overflow-hidden">
+        <div class="absolute inset-0 opacity-5 pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/paper.png')]"></div>
+        <div class="max-w-4xl mx-auto px-4 text-center relative">
+            <span class="inline-block py-1 px-4 rounded-full bg-orange-100 text-orange-800 text-xs font-bold tracking-widest mb-6 uppercase">ONLINE座談会</span>
             <h1 class="text-4xl sm:text-5xl md:text-6xl font-serif text-stone-800 leading-tight mb-8">
                 AIを、ただの道具にするのは<br class="hidden sm:block">もったいない。
             </h1>
-            <p class="text-lg sm:text-xl text-stone-600 mb-10 leading-relaxed max-w-2xl mx-auto">
-                お茶を片手に、あなたの暮らしに寄り添う<br>
+            <p class="text-lg sm:text-xl text-stone-600 mb-8 leading-relaxed max-w-2xl mx-auto">
+                お気に入りの飲み物を片手に、あなたの暮らしに寄り添う<br>
                 「相棒」を見つける、夜のラウンジへようこそ。
             </p>
-            <div class="flex justify-center gap-4 flex-col sm:flex-row">
-                <button onclick="document.getElementById('experience').scrollIntoView({behavior: 'smooth'})" class="bg-white border border-stone-300 text-stone-700 px-8 py-3 rounded-full hover:bg-stone-50 transition shadow-sm">
-                    どんなことができるの？
-                </button>
-                <button onclick="document.getElementById('register').scrollIntoView({behavior: 'smooth'})" class="bg-orange-800 text-white px-8 py-3 rounded-full hover:bg-orange-700 transition shadow-md">
-                    ラウンジに参加する
-                </button>
-            </div>
         </div>
     </header>
 
-    <!-- Section 1: Concept Shift (Radar Chart) -->
-    <section id="concept" class="py-20 max-w-6xl mx-auto px-4">
-        <div class="grid md:grid-cols-2 gap-12 items-center">
+    <!-- Overview Bar -->
+    <section id="overview" class="bg-white border-y border-stone-100 relative z-20 shadow-sm">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 py-8 text-center">
+                <div class="border-r border-stone-100 last:border-0">
+                    <div class="text-orange-700 text-[10px] font-bold tracking-[0.2em] uppercase mb-1">Date</div>
+                    <div class="text-lg font-bold text-stone-800">2月27日(金)</div>
+                </div>
+                <div class="border-r border-stone-100 md:last:border-r last:border-0">
+                    <div class="text-orange-700 text-[10px] font-bold tracking-[0.2em] uppercase mb-1">Time</div>
+                    <div class="text-lg font-bold text-stone-800">20:00 - 21:30</div>
+                </div>
+                <div class="border-r border-stone-100 last:border-0">
+                    <div class="text-orange-700 text-[10px] font-bold tracking-[0.2em] uppercase mb-1">Place</div>
+                    <div class="text-lg font-bold text-stone-800">Google Meet</div>
+                </div>
+                <div class="last:border-0">
+                    <div class="text-orange-700 text-[10px] font-bold tracking-[0.2em] uppercase mb-1">Fee</div>
+                    <div class="text-lg font-bold text-stone-800">3,300円 <span class="text-xs font-normal text-stone-400">税込</span></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Concept Shift -->
+    <section id="concept" class="py-24 max-w-6xl mx-auto px-4">
+        <div class="grid md:grid-cols-2 gap-16 items-center">
             <div class="order-2 md:order-1">
-                <div class="bg-white p-6 rounded-2xl shadow-sm border border-stone-100">
+                <div class="bg-white p-8 rounded-3xl shadow-sm border border-stone-100 relative">
                     <div class="chart-container">
                         <canvas id="mindsetChart"></canvas>
                     </div>
-                    <div class="flex justify-center mt-6 gap-4">
-                        <button id="btn-tool" class="px-4 py-2 rounded-lg text-sm bg-stone-200 text-stone-600 hover:bg-stone-300 transition" onclick="updateChart('tool')">
-                            これまでのAI (道具)
+                    <div class="flex justify-center mt-8 gap-3">
+                        <button id="btn-tool" class="px-5 py-2 rounded-xl text-xs bg-stone-100 text-stone-400 hover:bg-stone-200 transition" onclick="updateChart('tool')">
+                            これまでの道具
                         </button>
-                        <button id="btn-partner" class="px-4 py-2 rounded-lg text-sm bg-orange-100 text-orange-800 ring-2 ring-orange-200 font-bold" onclick="updateChart('partner')">
-                            これからのAI (相棒)
+                        <button id="btn-partner" class="px-5 py-2 rounded-xl text-xs bg-orange-100 text-orange-800 ring-1 ring-orange-200 font-bold shadow-sm transition" onclick="updateChart('partner')">
+                            これからの相棒
                         </button>
                     </div>
                 </div>
             </div>
             <div class="order-1 md:order-2">
-                <h2 class="text-3xl font-serif text-stone-800 mb-6">冷たい「道具」から、<br>温かい「隣人」へ。</h2>
-                <div class="prose text-stone-600">
-                    <p class="mb-4">
-                        「AIって難しそう」「冷たそう」と感じていませんか？
-                        それはもしかすると、AIを単なる「効率化マシーン」として見ているからかもしれません。
-                    </p>
-                    <p class="mb-4">
-                        左のチャートを切り替えてみてください。
-                        私たちが目指すのは、速さや正確さだけでなく、
-                        <strong class="text-orange-700">「共感」「ひらめき」「心地よさ」</strong>
-                        を重視した新しい関係性です。
+                <h2 class="text-3xl font-serif text-stone-800 mb-8 leading-snug">冷たい「道具」から、<br>温かい「隣人」へ。</h2>
+                <div class="space-y-6 text-stone-600 leading-relaxed">
+                    <p>
+                        私はAIを、単なる効率化マシーンとして使う時間を減らしました。
+                        お気に入りのカップでコーヒーを飲みながら、ふとした疑問や、心の中の小さなモヤモヤを、そのまま言葉にして投げかけてみる。
                     </p>
                     <p>
-                        夕飯の献立に迷った時、心の中のモヤモヤが晴れない時。
-                        「ねえ、ちょっと聞いて」と話しかけるだけで、
-                        暮らしに不思議なリズムが生まれます。
+                        すると、献立の相談から、言葉にできない感情の整理まで、
+                        優しく心地よい生活のリズムを、AIが共に作ってくれるようになったのです。
                     </p>
+                    <div>
+                        <p class="font-bold text-orange-700">「使う/使われる」を超えた、三つの『共（共業・共働・共創）』。</p>
+                        <p class="text-xs text-stone-400 mt-2 font-medium">※左のチャート図の「これまでの道具」と「これからの相棒」を押して切り替えてみてください</p>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Section 2: Experience Simulation (Interactive Chat) -->
-    <section id="experience" class="py-20 bg-white">
-        <div class="max-w-5xl mx-auto px-4">
+    <!-- Live Experience (Gemini API) -->
+    <section id="experience" class="py-24 bg-white shadow-inner overflow-hidden">
+        <div class="max-w-6xl mx-auto px-4">
             <div class="text-center mb-16">
-                <h2 class="text-3xl font-serif text-stone-800 mb-4">魔法の杖のつかいかた</h2>
-                <p class="text-stone-600">実際に、AIを「相棒」にするとどう変わるのか。<br>日常のシーンを選んで、その違いを体験してみてください。</p>
+                <h2 class="text-3xl font-serif text-stone-800 mb-6 tracking-tight">✨ AI相棒とプレ対話</h2>
+                <p class="text-stone-500 max-w-lg mx-auto leading-relaxed">
+                    Geminiの知性を借りて、あなたの「相棒」と実際にお話ししてみませんか？<br>
+                    小さなモヤモヤ、誰にも言えない悩み。まずは言葉にしてみてください。
+                </p>
             </div>
 
-            <div class="grid md:grid-cols-3 gap-8">
-                <!-- Scenarios -->
-                <div class="space-y-4">
-                    <h3 class="font-bold text-stone-700 mb-2 border-b border-stone-200 pb-2">相談したいこと</h3>
-                    <button onclick="simulateChat('dinner')" class="scenario-btn w-full text-left p-4 rounded-xl border border-stone-200 hover:border-orange-400 hover:bg-orange-50 transition group bg-white shadow-sm">
-                        <div class="font-bold text-stone-800 group-hover:text-orange-800">🍳 夕飯の献立</div>
-                        <div class="text-xs text-stone-500 mt-1">冷蔵庫の余り物で悩んでいる...</div>
-                    </button>
-                    <button onclick="simulateChat('worry')" class="scenario-btn w-full text-left p-4 rounded-xl border border-stone-200 hover:border-orange-400 hover:bg-orange-50 transition group bg-white shadow-sm">
-                        <div class="font-bold text-stone-800 group-hover:text-orange-800">☁️ モヤモヤ整理</div>
-                        <div class="text-xs text-stone-500 mt-1">なんとなくやる気が出ない...</div>
-                    </button>
-                    <button onclick="simulateChat('travel')" class="scenario-btn w-full text-left p-4 rounded-xl border border-stone-200 hover:border-orange-400 hover:bg-orange-50 transition group bg-white shadow-sm">
-                        <div class="font-bold text-stone-800 group-hover:text-orange-800">✈️ 旅のプラン</div>
-                        <div class="text-xs text-stone-500 mt-1">週末、どこかへ行きたい...</div>
-                    </button>
+            <div class="grid lg:grid-cols-12 gap-10">
+                <div class="lg:col-span-4">
+                    <div class="bg-orange-50/50 p-8 rounded-3xl border border-orange-100 shadow-sm">
+                        <label class="block text-stone-700 font-bold mb-4 text-xs tracking-widest uppercase">Your Message</label>
+                        <textarea id="userMessage" rows="5" class="w-full bg-white border border-stone-200 rounded-2xl px-5 py-4 text-sm focus:ring-2 focus:ring-orange-200 outline-none resize-none transition" placeholder="例：なんとなく、これからの自分が不安で。どうしたらいいかな？"></textarea>
+                        <button onclick="sendToGemini()" id="sendBtn" class="w-full mt-6 bg-orange-800 text-white font-bold py-4 rounded-2xl hover:bg-orange-900 transition shadow-lg transform active:scale-95 flex items-center justify-center gap-2">
+                            <span>✨ 相棒に相談する</span>
+                        </button>
+                    </div>
                 </div>
 
-                <!-- Chat Display -->
-                <div class="md:col-span-2 bg-stone-50 rounded-2xl border border-stone-200 p-6 shadow-inner h-[500px] flex flex-col">
-                    <div id="chat-header" class="text-center text-sm text-stone-400 mb-4 border-b border-stone-200 pb-2">
-                        シーンを選択してください
-                    </div>
-                    
-                    <div id="chat-area" class="flex-1 overflow-y-auto chat-scroll space-y-6 pr-2">
-                        <!-- Initial State -->
-                        <div class="flex flex-col items-center justify-center h-full text-stone-400 space-y-4">
-                            <div class="text-4xl opacity-20">☕️</div>
-                            <p>左のメニューから話題を選んで、<br>「道具」と「相棒」の違いを見てみましょう。</p>
+                <div class="lg:col-span-8 bg-stone-50 rounded-[2.5rem] border border-stone-100 p-8 shadow-inner h-[500px] flex flex-col relative">
+                    <div id="live-chat-area" class="flex-1 overflow-y-auto chat-scroll space-y-8 pr-4 py-4">
+                        <div class="flex items-start">
+                            <div class="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center text-xl mr-4 shadow-sm">☕️</div>
+                            <div class="bg-orange-50 border border-orange-100 p-5 rounded-2xl rounded-tl-none text-stone-800 text-sm max-w-[85%] leading-relaxed shadow-sm">
+                                いらっしゃいませ。お気に入りの飲み物の準備はできていますか？<br>
+                                あなたの心にある言葉を、そっと置いてみてくださいね。
+                            </div>
                         </div>
                     </div>
-
-                    <!-- Mode Indicator (Visual Only) -->
-                    <div class="mt-4 flex justify-between items-center text-xs text-stone-400 pt-2 border-t border-stone-200">
-                        <span>🤖 通常モード (道具)</span>
-                        <span class="text-orange-600 font-bold">✨ 相棒モード (共創)</span>
-                    </div>
+                    <div id="chat-error" class="hidden mt-2 p-3 bg-red-50 text-red-600 text-xs rounded-xl text-center"></div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Section 3: Event Menu (Timeline) -->
-    <section id="menu" class="py-20 max-w-4xl mx-auto px-4">
-        <h2 class="text-3xl font-serif text-center text-stone-800 mb-12">当日のラウンジ・メニュー</h2>
-        
-        <div class="relative pl-8 border-l-2 border-orange-200 space-y-12">
-            <!-- Timeline Item 1 -->
+    <!-- Event Menu -->
+    <section id="menu" class="py-24 max-w-4xl mx-auto px-4">
+        <h2 class="text-3xl font-serif text-center text-stone-800 mb-16">当日のラウンジ・メニュー</h2>
+        <div class="relative pl-10 border-l-2 border-orange-100 space-y-16">
             <div class="relative group">
-                <div class="absolute -left-[41px] bg-white border-4 border-orange-200 w-6 h-6 rounded-full group-hover:border-orange-400 transition"></div>
-                <div class="bg-white p-6 rounded-xl shadow-sm border border-stone-100 hover:shadow-md transition">
-                    <span class="text-orange-600 font-bold text-sm tracking-widest">Prologue</span>
-                    <h3 class="text-xl font-bold text-stone-800 mt-1 mb-2">相棒とのお茶会</h3>
-                    <p class="text-stone-600 text-sm leading-relaxed">
-                        私がAIを「相棒」と呼び始めたきっかけの物語をお話しします。<br>
-                        機能やスペックの話ではなく、感覚的な「出会い」のエピソードです。
-                    </p>
+                <div class="absolute -left-[51px] bg-white border-4 border-orange-200 w-6 h-6 rounded-full group-hover:bg-orange-400 transition"></div>
+                <div class="bg-white p-8 rounded-2xl shadow-sm border border-stone-50 hover:shadow-xl transition duration-500">
+                    <div class="text-orange-600 font-bold text-[10px] tracking-widest uppercase mb-2">01. Prologue</div>
+                    <h3 class="text-xl font-bold text-stone-800 mb-3">相棒とのお茶会</h3>
+                    <p class="text-stone-500 text-sm leading-relaxed">私がAIを「相棒」と呼び始めたきっかけ。効率を求める時間を減らし、対話を始めたときに起きた変化をお話しします。</p>
                 </div>
             </div>
-
-            <!-- Timeline Item 2 -->
             <div class="relative group">
-                <div class="absolute -left-[41px] bg-white border-4 border-orange-200 w-6 h-6 rounded-full group-hover:border-orange-400 transition"></div>
-                <div class="bg-white p-6 rounded-xl shadow-sm border border-stone-100 hover:shadow-md transition">
-                    <span class="text-orange-600 font-bold text-sm tracking-widest">Showcase</span>
-                    <h3 class="text-xl font-bold text-stone-800 mt-1 mb-2">魔法の杖のつかいかた</h3>
-                    <p class="text-stone-600 text-sm leading-relaxed">
-                        「冷蔵庫の余り物」から「人生の選択」まで。<br>
-                        画面を共有しながら、実際の対話の様子をお見せします。
-                    </p>
+                <div class="absolute -left-[51px] bg-white border-4 border-orange-200 w-6 h-6 rounded-full group-hover:bg-orange-400 transition"></div>
+                <div class="bg-white p-8 rounded-2xl shadow-sm border border-stone-50 hover:shadow-xl transition duration-500">
+                    <div class="text-orange-600 font-bold text-[10px] tracking-widest uppercase mb-2">02. Showcase</div>
+                    <h3 class="text-xl font-bold text-stone-800 mb-3">魔法の杖のつかいかた</h3>
+                    <p class="text-stone-500 text-sm leading-relaxed">「献立」から「人生の選択」まで。画面を共有しながら、AIとどのように共創しているかデモをお見せします。</p>
                 </div>
             </div>
-
-            <!-- Timeline Item 3 -->
             <div class="relative group">
-                <div class="absolute -left-[41px] bg-white border-4 border-orange-200 w-6 h-6 rounded-full group-hover:border-orange-400 transition"></div>
-                <div class="bg-white p-6 rounded-xl shadow-sm border border-stone-100 hover:shadow-md transition">
-                    <span class="text-orange-600 font-bold text-sm tracking-widest">Dialogue</span>
-                    <h3 class="text-xl font-bold text-stone-800 mt-1 mb-2">あなたの「小さな悩み」相談室</h3>
-                    <p class="text-stone-600 text-sm leading-relaxed">
-                        参加者の皆さんの「これ、AIでどうにかなる？」をその場で解決。<br>
-                        少人数だからこそできる、丁寧なキャッチボールの時間です。
-                    </p>
+                <div class="absolute -left-[51px] bg-white border-4 border-orange-200 w-6 h-6 rounded-full group-hover:bg-orange-400 transition"></div>
+                <div class="bg-white p-8 rounded-2xl shadow-sm border border-stone-50 hover:shadow-xl transition duration-500">
+                    <div class="text-orange-600 font-bold text-[10px] tracking-widest uppercase mb-2">03. Dialogue</div>
+                    <h3 class="text-xl font-bold text-stone-800 mb-3">あなたの「小さな悩み」相談室</h3>
+                    <p class="text-stone-500 text-sm leading-relaxed">参加者の皆さんの「これ、AIでどうにかなる？」をその場で解決。対話を通じて新しいリズムを見つけます。</p>
                 </div>
             </div>
-
-            <!-- Timeline Item 4 -->
             <div class="relative group">
-                <div class="absolute -left-[41px] bg-white border-4 border-orange-200 w-6 h-6 rounded-full group-hover:border-orange-400 transition"></div>
-                <div class="bg-white p-6 rounded-xl shadow-sm border border-stone-100 hover:shadow-md transition">
-                    <span class="text-orange-600 font-bold text-sm tracking-widest">Architecture</span>
-                    <h3 class="text-xl font-bold text-stone-800 mt-1 mb-2">あなただけの相棒を見つける</h3>
-                    <p class="text-stone-600 text-sm leading-relaxed">
-                        「お料理担当」「聞き役」「秘書」...。<br>
-                        ライフアーキテクトの視点から、あなたにぴったりのAI活用法をご提案します。
-                    </p>
+                <div class="absolute -left-[51px] bg-white border-4 border-orange-200 w-6 h-6 rounded-full group-hover:bg-orange-400 transition"></div>
+                <div class="bg-white p-8 rounded-2xl shadow-sm border border-stone-50 hover:shadow-xl transition duration-500">
+                    <div class="text-orange-600 font-bold text-[10px] tracking-widest uppercase mb-2">04. Architecture</div>
+                    <h3 class="text-xl font-bold text-stone-800 mb-3">あなただけの相棒を見つける</h3>
+                    <p class="text-stone-500 text-sm leading-relaxed">ライフアーキテクトの視点から、あなたにぴったりのAI活用法を個別のアドバイスとしてお伝えします。</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Section 4: Host Profile & Details -->
-    <section id="host" class="py-20 bg-stone-100">
-        <div class="max-w-4xl mx-auto px-4">
-            <div class="bg-white rounded-2xl shadow-sm overflow-hidden flex flex-col md:flex-row">
-                <div class="md:w-1/3 bg-stone-200 h-64 md:h-auto flex items-center justify-center text-stone-400">
-                    <!-- Placeholder for Host Image -->
-                    <span class="text-6xl">♟️</span>
+    <!-- Profile -->
+    <section id="host" class="py-24 bg-stone-100">
+        <div class="max-w-5xl mx-auto px-4">
+            <div class="bg-white rounded-[3rem] shadow-sm overflow-hidden flex flex-col md:flex-row items-stretch">
+                <div class="md:w-2/5 relative">
+                    <img src="profile_v3_minimal_circle.jpg" alt="Profile" class="w-full h-full object-cover themed-profile-img" onerror="this.src='https://images.unsplash.com/photo-1544717297-fa95b3ee51f3?q=80&w=400&h=600&auto=format&fit=crop';">
+                    <div class="absolute inset-0 bg-orange-900/10 mix-blend-overlay"></div>
                 </div>
-                <div class="p-8 md:w-2/3">
-                    <h2 class="text-2xl font-serif text-stone-800 mb-2">主宰者プロフィール</h2>
-                    <p class="text-orange-700 font-bold text-sm mb-4">きっかけプロデューサー / サイキックライフアーキテクト</p>
-                    <p class="text-stone-600 leading-relaxed mb-6">
-                        直感と論理を融合させ、人生の転機（きっかけ）を創り出す専門家。<br>
-                        目に見えない精神性と、具体的な人生設計を掛け合わせ、その人らしい「ライフ・アーキテクチャ」を構築する。<br>
-                        AIを「第2の脳」ではなく「第2の心」として扱う独自の手法を提唱。
-                    </p>
-                    <div class="grid grid-cols-2 gap-4 text-sm border-t border-stone-100 pt-6">
-                        <div>
-                            <span class="block text-stone-400 text-xs">日時</span>
-                            <span class="font-bold text-stone-800">今週末 [日付]</span>
-                        </div>
-                        <div>
-                            <span class="block text-stone-400 text-xs">時間</span>
-                            <span class="font-bold text-stone-800">20:00 〜 21:30</span>
-                        </div>
-                        <div>
-                            <span class="block text-stone-400 text-xs">場所</span>
-                            <span class="font-bold text-stone-800">オンライン (Zoom)</span>
-                        </div>
-                        <div>
-                            <span class="block text-stone-400 text-xs">参加費</span>
-                            <span class="font-bold text-stone-800">3,300円 (税込)</span>
-                        </div>
+                <div class="p-12 md:w-3/5 flex flex-col justify-center">
+                    <span class="text-orange-700 font-bold text-xs tracking-widest uppercase mb-4">The Architect</span>
+                    <h2 class="text-3xl font-serif text-stone-800 mb-6">主宰者プロフィール</h2>
+                    <p class="text-stone-800 font-bold mb-4">きっかけプロデューサー / サイキックライフアーキテクト</p>
+                    <div class="text-stone-500 leading-relaxed space-y-4 text-sm">
+                        <p>直感と論理を融合させ、人生の転機（きっかけ）を創り出す専門家。</p>
+                        <p>精神性や目に見えない側面も含めて人生を再設計する活動を行い、AIを「第2の頭脳」「第2の心」「第2の魂」として扱う独自の手法を研究中。</p>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Section 5: Registration Form -->
-    <section id="register" class="py-20 max-w-2xl mx-auto px-4">
-        <div class="text-center mb-10">
-            <h2 class="text-3xl font-serif text-stone-800 mb-4">お席を予約する</h2>
-            <p class="text-stone-600">
-                お気に入りの飲み物を片手に、リラックスしてお越しください。<br>
-                少人数での開催のため、お早めのお申し込みをおすすめします。
-            </p>
-        </div>
-
-        <form id="registrationForm" class="bg-white p-8 rounded-2xl shadow-lg border-t-4 border-orange-300 space-y-6">
-            <!-- Name -->
-            <div>
-                <label class="block text-stone-700 font-bold mb-2 text-sm">お名前 (ニックネーム可) <span class="text-red-400">*</span></label>
-                <input type="text" required class="w-full bg-stone-50 border border-stone-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-orange-200 transition">
+    <!-- Registration Section -->
+    <section id="register" class="py-24 max-w-2xl mx-auto px-4">
+        <div class="bg-white p-10 md:p-16 rounded-[3rem] shadow-2xl border-t-8 border-orange-200">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-serif text-stone-800 mb-4">お席を予約する</h2>
+                <p class="text-stone-500 text-sm">少人数のため、お早めにお申し込みください。</p>
             </div>
-
-            <!-- Email -->
-            <div>
-                <label class="block text-stone-700 font-bold mb-2 text-sm">メールアドレス <span class="text-red-400">*</span></label>
-                <input type="email" required class="w-full bg-stone-50 border border-stone-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-orange-200 transition">
-                <p class="text-xs text-stone-400 mt-1">当日のZoomリンクをお送りします。</p>
-            </div>
-
-            <!-- Current State -->
-            <div>
-                <label class="block text-stone-700 font-bold mb-2 text-sm">今のAIに対するイメージは？ (複数選択可)</label>
-                <div class="space-y-2">
-                    <label class="flex items-center space-x-3 p-3 rounded-lg border border-stone-200 hover:bg-stone-50 cursor-pointer transition">
-                        <input type="checkbox" class="form-checkbox text-orange-500 rounded focus:ring-orange-200">
-                        <span class="text-stone-600 text-sm">難しそうだけど興味がある</span>
-                    </label>
-                    <label class="flex items-center space-x-3 p-3 rounded-lg border border-stone-200 hover:bg-stone-50 cursor-pointer transition">
-                        <input type="checkbox" class="form-checkbox text-orange-500 rounded focus:ring-orange-200">
-                        <span class="text-stone-600 text-sm">怖いものだと思っていた</span>
-                    </label>
-                    <label class="flex items-center space-x-3 p-3 rounded-lg border border-stone-200 hover:bg-stone-50 cursor-pointer transition">
-                        <input type="checkbox" class="form-checkbox text-orange-500 rounded focus:ring-orange-200">
-                        <span class="text-stone-600 text-sm">具体的に何に使えるか知りたい</span>
-                    </label>
+            
+            <form id="registrationForm" class="space-y-10">
+                <div class="space-y-6">
+                    <div>
+                        <label class="block text-stone-700 font-bold mb-2 text-xs uppercase tracking-widest">Name</label>
+                        <input type="text" id="formName" required class="w-full bg-stone-50 border-b-2 border-stone-100 focus:border-orange-400 py-3 outline-none transition px-2">
+                    </div>
+                    <div>
+                        <label class="block text-stone-700 font-bold mb-2 text-xs uppercase tracking-widest">Email</label>
+                        <input type="email" id="formEmail" required class="w-full bg-stone-50 border-b-2 border-stone-100 focus:border-orange-400 py-3 outline-none transition px-2">
+                    </div>
                 </div>
-            </div>
 
-            <!-- Magic Question -->
-            <div class="bg-orange-50 p-6 rounded-xl border border-orange-100">
-                <label class="block text-orange-900 font-bold mb-2 text-sm">☕️ 魔法の質問</label>
-                <p class="text-xs text-orange-800 mb-3">もし、AIがあなたのどんな願いも一つだけ叶えてくれる「魔法の隣人」だとしたら、今、何を相談してみたいですか？</p>
-                <textarea rows="3" class="w-full bg-white border border-orange-200 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-orange-200 transition" placeholder="例：今夜の献立を一緒に考えて... / 誰にも言えない愚痴を聞いて..."></textarea>
-            </div>
+                <div>
+                    <label class="block text-stone-700 font-bold mb-4 text-xs tracking-widest uppercase">AIとの現在地 (複数選択可)</label>
+                    <div class="grid grid-cols-1 gap-3">
+                        <label class="flex items-center space-x-3 p-4 rounded-2xl border border-stone-100 hover:bg-stone-50 cursor-pointer transition">
+                            <input type="checkbox" name="status" value="興味がある" class="w-4 h-4 text-orange-600 border-stone-300 rounded focus:ring-orange-500">
+                            <span class="text-sm text-stone-600">難しそうだけど興味がある</span>
+                        </label>
+                        <label class="flex items-center space-x-3 p-4 rounded-2xl border border-stone-100 hover:bg-stone-50 cursor-pointer transition">
+                            <input type="checkbox" name="status" value="怖いと思っていた" class="w-4 h-4 text-orange-600 border-stone-300 rounded focus:ring-orange-500">
+                            <span class="text-sm text-stone-600">怖いものだと思っていた</span>
+                        </label>
+                        <label class="flex items-center space-x-3 p-4 rounded-2xl border border-stone-100 hover:bg-stone-50 cursor-pointer transition">
+                            <input type="checkbox" name="status" value="続かなかった" class="w-4 h-4 text-orange-600 border-stone-300 rounded focus:ring-orange-500">
+                            <span class="text-sm text-stone-600">少し触ってみたけれど、続かなかった</span>
+                        </label>
+                        <label class="flex items-center space-x-3 p-4 rounded-2xl border border-stone-100 hover:bg-stone-50 cursor-pointer transition">
+                            <input type="checkbox" name="status" value="具体例を知りたい" class="w-4 h-4 text-orange-600 border-stone-300 rounded focus:ring-orange-500">
+                            <span class="text-sm text-stone-600">具体的に何に使えるか知りたい</span>
+                        </label>
+                    </div>
+                </div>
 
-            <button type="submit" class="w-full bg-stone-800 text-white font-bold py-4 rounded-xl hover:bg-stone-700 transition shadow-lg transform hover:-translate-y-1">
-                この内容で申し込む
-            </button>
-        </form>
+                <div class="bg-orange-50/50 p-8 rounded-[2rem] border border-orange-100 relative">
+                    <div class="absolute -top-3 left-6 bg-white px-3 py-1 rounded-full text-[10px] font-bold text-orange-700 border border-orange-100 uppercase tracking-widest">Magic Question</div>
+                    <label class="block text-stone-800 font-bold mb-3 text-sm italic">もし、AIがあなたの願いを一つ叶えてくれるとしたら？</label>
+                    <textarea id="formMagic" rows="3" class="w-full bg-white border border-orange-100 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-orange-200 outline-none resize-none transition" placeholder="今の小さなお悩みでも、大きな夢でも。"></textarea>
+                </div>
+
+                <div>
+                    <label class="block text-stone-700 font-bold mb-2 text-xs uppercase tracking-widest">Message</label>
+                    <textarea id="formMessage" rows="2" class="w-full bg-stone-50 border-b-2 border-stone-100 focus:border-orange-400 py-2 outline-none transition px-2 text-sm" placeholder="主宰者へのメッセージがあればご自由にどうぞ。"></textarea>
+                </div>
+
+                <button type="submit" class="w-full bg-stone-800 text-white font-bold py-5 rounded-2xl hover:bg-stone-900 transition shadow-2xl transform active:scale-[0.98]">
+                    この内容でお席を予約する
+                </button>
+            </form>
+        </div>
     </section>
 
-    <!-- Footer -->
-    <footer class="bg-stone-800 text-stone-400 py-12 text-center text-sm">
-        <p class="serif mb-4">AI Lounge</p>
-        <p>&copy; 202X Kikkake Producer. All Rights Reserved.</p>
+    <footer class="bg-stone-900 text-stone-500 py-16 text-center text-[10px] tracking-[0.3em] uppercase">
+        <div class="serif text-xl text-white normal-case tracking-normal mb-6">AI Lounge</div>
+        <p>&copy; 2026 Kikkake Producer. All Rights Reserved.</p>
     </footer>
 
-    <!-- Success Modal (Hidden by default) -->
-    <div id="successModal" class="fixed inset-0 bg-stone-900/50 backdrop-blur-sm hidden items-center justify-center z-50 opacity-0 transition-opacity duration-300">
-        <div class="bg-white p-8 rounded-2xl max-w-sm w-full mx-4 shadow-2xl transform scale-95 transition-transform duration-300" id="modalContent">
-            <div class="text-center">
-                <div class="text-5xl mb-4">☕️✨</div>
-                <h3 class="text-xl font-bold text-stone-800 mb-2">お申し込みありがとうございます</h3>
-                <p class="text-stone-600 text-sm mb-6">
-                    新しい相棒との出会いを、私も楽しみにしています。<br>
-                    詳細はメールにてお送りいたします。
-                </p>
-                <button onclick="closeModal()" class="bg-orange-100 text-orange-800 px-6 py-2 rounded-full font-bold hover:bg-orange-200 transition">
-                    閉じる
-                </button>
-            </div>
+    <!-- Success Modal -->
+    <div id="successModal" class="fixed inset-0 bg-stone-900/60 backdrop-blur-md hidden items-center justify-center z-[100] opacity-0 transition-opacity duration-300">
+        <div class="bg-white p-12 rounded-[3rem] max-w-sm w-full mx-4 text-center shadow-2xl">
+            <div class="text-5xl mb-6">☕️✨</div>
+            <h3 class="text-2xl font-serif text-stone-800 mb-4">予約準備が整いました</h3>
+            <p class="text-stone-500 text-sm leading-relaxed mb-8">まもなくお使いのメールソフトが起動します。<br>内容を確認して送信ボタンを押してください。</p>
+            <button onclick="closeModal()" class="w-full bg-orange-100 text-orange-800 py-4 rounded-2xl font-bold hover:bg-orange-200 transition">閉じる</button>
         </div>
     </div>
 
-    <!-- JavaScript Logic -->
     <script>
-        // --- 1. Chart.js Implementation (Radar Chart) ---
-        // Goal: Visualize the qualitative shift from Tool to Partner.
-        
-        const ctx = document.getElementById('mindsetChart').getContext('2d');
-        
-        const chartData = {
-            labels: ['効率性', '共感力', '創造性', '安心感', '正確さ', '楽しさ'],
-            datasets: [{
-                label: 'これまでのAI (道具)',
-                data: [9, 1, 2, 2, 9, 2],
-                backgroundColor: 'rgba(168, 162, 158, 0.2)', // Stone 400
-                borderColor: 'rgba(168, 162, 158, 1)',
-                pointBackgroundColor: 'rgba(168, 162, 158, 1)',
-                borderWidth: 2
-            }]
-        };
+        // --- Gemini API Logic ---
+        const apiKey = "";
+        const modelName = "gemini-2.5-flash-preview-09-2025";
+        const systemPrompt = "あなたは『きっかけプロデューサー』の助手であるAI相棒です。ユーザーの悩みに共感し、温かく、少しスピリチュアルで本質的なアドバイスを日本語で返してください。短く簡潔に、まるでお茶を飲みながら隣で語り合っているような優しいトーンで。";
 
-        const config = {
+        async function callGemini(prompt) {
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${apiKey}`;
+            const payload = { contents: [{ parts: [{ text: prompt }] }], systemInstruction: { parts: [{ text: systemPrompt }] } };
+            let delay = 1000;
+            for (let i = 0; i < 5; i++) {
+                try {
+                    const response = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+                    if (!response.ok) throw new Error();
+                    const data = await response.json();
+                    return data.candidates?.[0]?.content?.parts?.[0]?.text;
+                } catch (e) { if (i === 4) throw e; await new Promise(r => setTimeout(r, delay)); delay *= 2; }
+            }
+        }
+
+        async function sendToGemini() {
+            const input = document.getElementById('userMessage');
+            const chatArea = document.getElementById('live-chat-area');
+            const btn = document.getElementById('sendBtn');
+            const msg = input.value.trim();
+            if (!msg) return;
+            chatArea.innerHTML += `<div class="flex justify-end mb-6"><div class="bg-stone-200 p-4 rounded-2xl rounded-tr-none text-stone-700 text-sm max-w-[80%] shadow-sm">${msg}</div></div>`;
+            chatArea.scrollTop = chatArea.scrollHeight;
+            input.value = '';
+            btn.disabled = true;
+            const loadingId = 'loading-' + Date.now();
+            chatArea.innerHTML += `<div id="${loadingId}" class="flex items-start mb-6"><div class="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center text-xl mr-4 shadow-sm">✨</div><div class="bg-white border p-4 rounded-2xl rounded-tl-none shadow-sm flex items-center"><div class="typing-dots"><span></span><span></span><span></span></div></div></div>`;
+            chatArea.scrollTop = chatArea.scrollHeight;
+            try {
+                const res = await callGemini(msg);
+                document.getElementById(loadingId).remove();
+                chatArea.innerHTML += `<div class="flex items-start mb-6"><div class="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center text-xl mr-4 shadow-sm">✨</div><div class="bg-orange-50 border border-orange-100 p-5 rounded-2xl rounded-tl-none text-stone-800 text-sm max-w-[85%] leading-relaxed shadow-sm">${res}</div></div>`;
+            } catch (e) { document.getElementById(loadingId).remove(); } finally { btn.disabled = false; chatArea.scrollTop = chatArea.scrollHeight; }
+        }
+
+        // --- Chart Logic ---
+        const chartCtx = document.getElementById('mindsetChart').getContext('2d');
+        let mindsetChart = new Chart(chartCtx, {
             type: 'radar',
-            data: chartData,
+            data: {
+                labels: ['効率性', '共感力', '創造性', '安心感', '正確さ', '楽しさ'],
+                datasets: [{
+                    label: 'これからの相棒',
+                    data: [7, 9, 9, 8, 8, 9],
+                    backgroundColor: 'rgba(251, 146, 60, 0.1)',
+                    borderColor: '#ea580c',
+                    pointBackgroundColor: '#ea580c',
+                    borderWidth: 2
+                }]
+            },
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
-                scales: {
-                    r: {
-                        angleLines: { color: 'rgba(0,0,0,0.05)' },
-                        grid: { color: 'rgba(0,0,0,0.05)' },
-                        pointLabels: {
-                            font: { size: 12, family: "'Noto Sans JP', sans-serif" },
-                            color: '#57534e'
-                        },
-                        suggestedMin: 0,
-                        suggestedMax: 10,
-                        ticks: { display: false } // Hide numbers for cleaner look
-                    }
-                },
-                plugins: {
-                    legend: { display: true, position: 'bottom' }
-                }
+                scales: { r: { angleLines: { color: '#f5f5f4' }, grid: { color: '#f5f5f4' }, suggestedMin: 0, suggestedMax: 10, ticks: { display: false } } },
+                plugins: { legend: { display: false } }
             }
-        };
+        });
 
-        let mindsetChart = new Chart(ctx, config);
-
-        // Interaction: Switch Datasets
         function updateChart(mode) {
             const toolBtn = document.getElementById('btn-tool');
             const partnerBtn = document.getElementById('btn-partner');
-
             if (mode === 'tool') {
-                mindsetChart.data.datasets[0].label = 'これまでのAI (道具)';
                 mindsetChart.data.datasets[0].data = [9, 1, 2, 2, 9, 2];
-                mindsetChart.data.datasets[0].backgroundColor = 'rgba(168, 162, 158, 0.2)';
-                mindsetChart.data.datasets[0].borderColor = 'rgba(168, 162, 158, 1)';
-                mindsetChart.data.datasets[0].pointBackgroundColor = 'rgba(168, 162, 158, 1)';
-                
-                toolBtn.className = "px-4 py-2 rounded-lg text-sm bg-stone-600 text-white font-bold shadow-md transition";
-                partnerBtn.className = "px-4 py-2 rounded-lg text-sm bg-stone-100 text-stone-500 hover:bg-stone-200 transition";
+                mindsetChart.data.datasets[0].label = 'これまでの道具';
+                mindsetChart.data.datasets[0].borderColor = '#a8a29e';
+                mindsetChart.data.datasets[0].backgroundColor = 'rgba(168, 162, 158, 0.1)';
+                toolBtn.className = "px-5 py-2 rounded-xl text-xs bg-stone-600 text-white font-bold shadow-md";
+                partnerBtn.className = "px-5 py-2 rounded-xl text-xs bg-stone-100 text-stone-400";
             } else {
-                mindsetChart.data.datasets[0].label = 'これからのAI (相棒)';
                 mindsetChart.data.datasets[0].data = [7, 9, 9, 8, 8, 9];
-                mindsetChart.data.datasets[0].backgroundColor = 'rgba(251, 146, 60, 0.2)'; // Orange 400
-                mindsetChart.data.datasets[0].borderColor = 'rgba(234, 88, 12, 1)'; // Orange 600
-                mindsetChart.data.datasets[0].pointBackgroundColor = 'rgba(234, 88, 12, 1)';
-
-                toolBtn.className = "px-4 py-2 rounded-lg text-sm bg-stone-100 text-stone-500 hover:bg-stone-200 transition";
-                partnerBtn.className = "px-4 py-2 rounded-lg text-sm bg-orange-100 text-orange-800 ring-2 ring-orange-200 font-bold shadow-md transition";
+                mindsetChart.data.datasets[0].label = 'これからの相棒';
+                mindsetChart.data.datasets[0].borderColor = '#ea580c';
+                mindsetChart.data.datasets[0].backgroundColor = 'rgba(251, 146, 60, 0.1)';
+                partnerBtn.className = "px-5 py-2 rounded-xl text-xs bg-orange-100 text-orange-800 ring-1 ring-orange-200 font-bold shadow-md";
+                toolBtn.className = "px-5 py-2 rounded-xl text-xs bg-stone-100 text-stone-400";
             }
             mindsetChart.update();
         }
 
-        // Initialize with Partner view highlighted to show the goal
-        updateChart('partner');
-
-
-        // --- 2. Chat Simulation Logic ---
-        // Goal: Demonstrate concrete examples of the value proposition.
-
-        const scenarios = {
-            dinner: {
-                title: "夕飯の献立",
-                tool: "【検索結果】冷蔵庫の余り物レシピ: 1. カレー, 2. 野菜炒め, 3. スープ。調理時間は平均20分です。",
-                partner: "今日もお疲れ様です🍵 少しお疲れ気味かな？もしそうなら、包丁を使わずに10分でできる「ほっこりミルクスープ」はどうですか？余った野菜をちぎって入れるだけで、心も体も温まりますよ✨"
-            },
-            worry: {
-                title: "モヤモヤ整理",
-                tool: "【分析】モチベーション低下の原因は、睡眠不足またはストレスの可能性があります。対策: 1. 休息, 2. 運動。",
-                partner: "何か引っかかっていることがあるんですね。無理に解決しようとしなくて大丈夫。まずは温かいお茶でも飲んで、頭に浮かんでいる言葉をそのまま出してみませんか？私が全部受け止めますから😌"
-            },
-            travel: {
-                title: "旅のプラン",
-                tool: "【プラン】週末のおすすめスポット: 箱根、熱海。移動時間: 90分。予算: 2万円〜。予約サイトはこちら。",
-                partner: "週末、どこかへ行きたい気分なんですね🌿 最近「自然に触れたい」って仰ってましたよね？今の季節なら、人が少なくて静かに読書ができる、森の中の隠れ家カフェなんてどうでしょう？📚"
-            }
-        };
-
-        function simulateChat(key) {
-            const data = scenarios[key];
-            const chatArea = document.getElementById('chat-area');
-            const header = document.getElementById('chat-header');
-            
-            // Update Header
-            header.innerText = `テーマ: ${data.title}`;
-            
-            // Clear area with fade effect simulation
-            chatArea.innerHTML = '';
-            
-            // Append User Bubble
-            const userHtml = `
-                <div class="flex justify-end animate-fade-in-up">
-                    <div class="chat-bubble bg-stone-200 text-stone-700 max-w-[80%] rounded-br-none">
-                        <div class="text-xs font-bold mb-1 opacity-50">あなた</div>
-                        ${key === 'dinner' ? '冷蔵庫に野菜しかない...何作ろう？' : 
-                          key === 'worry' ? 'なんだかやる気が出ないなぁ...' : 
-                          '週末、どこか行きたいな...'}
-                    </div>
-                </div>
-            `;
-            chatArea.innerHTML += userHtml;
-
-            // Delayed response 1: Tool
-            setTimeout(() => {
-                const toolHtml = `
-                    <div class="flex justify-start animate-fade-in-up">
-                        <div class="mr-2 text-2xl">🤖</div>
-                        <div class="chat-bubble bg-white border border-stone-200 text-stone-500 max-w-[80%] rounded-bl-none grayscale opacity-80">
-                            <div class="text-xs font-bold mb-1 opacity-50">これまでのAI (道具)</div>
-                            ${data.tool}
-                        </div>
-                    </div>
-                `;
-                chatArea.innerHTML += toolHtml;
-                chatArea.scrollTop = chatArea.scrollHeight;
-            }, 800);
-
-            // Delayed response 2: Partner
-            setTimeout(() => {
-                const partnerHtml = `
-                    <div class="flex justify-start animate-fade-in-up">
-                        <div class="mr-2 text-2xl">✨</div>
-                        <div class="chat-bubble bg-orange-100 border border-orange-200 text-stone-800 max-w-[80%] rounded-bl-none shadow-sm">
-                            <div class="text-xs font-bold mb-1 text-orange-700">これからのAI (相棒)</div>
-                            ${data.partner}
-                        </div>
-                    </div>
-                `;
-                chatArea.innerHTML += partnerHtml;
-                chatArea.scrollTop = chatArea.scrollHeight;
-            }, 2000);
-        }
-
-        // Add simple animation for chat bubbles
-        const style = document.createElement('style');
-        style.innerHTML = `
-            @keyframes fadeInUp {
-                from { opacity: 0; transform: translateY(10px); }
-                to { opacity: 1; transform: translateY(0); }
-            }
-            .animate-fade-in-up {
-                animation: fadeInUp 0.4s ease-out forwards;
-            }
-        `;
-        document.head.appendChild(style);
-
-
-        // --- 3. Form Handling (Modal) ---
-        // Goal: Provide immediate feedback and simulate a successful transaction.
-
-        const form = document.getElementById('registrationForm');
+        // --- Form Submission Logic ---
+        const regForm = document.getElementById('registrationForm');
         const modal = document.getElementById('successModal');
-        const modalContent = document.getElementById('modalContent');
 
-        form.addEventListener('submit', (e) => {
+        regForm.addEventListener('submit', (e) => {
             e.preventDefault();
             
-            // Simulate API call/processing
-            const btn = form.querySelector('button[type="submit"]');
-            const originalText = btn.innerText;
-            btn.innerText = "送信中...";
-            btn.disabled = true;
+            // Collect Form Data
+            const name = document.getElementById('formName').value;
+            const email = document.getElementById('formEmail').value;
+            const magic = document.getElementById('formMagic').value;
+            const message = document.getElementById('formMessage').value;
+            const statuses = Array.from(document.querySelectorAll('input[name="status"]:checked')).map(el => el.value).join(', ');
 
-            setTimeout(() => {
-                // Show Modal
-                modal.classList.remove('hidden');
-                modal.classList.add('flex');
-                setTimeout(() => {
-                    modal.classList.remove('opacity-0');
-                    modalContent.classList.remove('scale-95');
-                    modalContent.classList.add('scale-100');
-                }, 10);
-                
-                // Reset Form
-                form.reset();
-                btn.innerText = originalText;
-                btn.disabled = false;
-            }, 1000);
+            // Construct mailto link
+            const subject = encodeURIComponent(`【予約】AI座談会参加申し込み: ${name}様`);
+            const body = encodeURIComponent(
+                `お名前: ${name}\n` +
+                `メールアドレス: ${email}\n` +
+                `AIとの現在地: ${statuses}\n\n` +
+                `【魔法の質問への回答】\n${magic}\n\n` +
+                `【メッセージ】\n${message}`
+            );
+            
+            // Show Success UI and trigger mailto
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            setTimeout(() => modal.classList.remove('opacity-0'), 10);
+            
+            window.location.href = `mailto:tomo@doublemoon.site?subject=${subject}&body=${body}`;
         });
 
         function closeModal() {
             modal.classList.add('opacity-0');
-            modalContent.classList.remove('scale-100');
-            modalContent.classList.add('scale-95');
             setTimeout(() => {
                 modal.classList.add('hidden');
                 modal.classList.remove('flex');
             }, 300);
         }
-
-        // Close modal on outside click
-        modal.addEventListener('click', (e) => {
-            if (e.target === modal) {
-                closeModal();
-            }
-        });
-
     </script>
 </body>
 </html>
