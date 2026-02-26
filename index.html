@@ -43,7 +43,6 @@
             transition: all 0.5s ease;
         }
 
-        /* Notion Form Container Styling */
         .notion-form-wrapper {
             width: 100%;
             min-height: 600px;
@@ -60,6 +59,7 @@
     <nav class="sticky top-0 z-50 bg-[#fdfbf7]/90 backdrop-blur-md border-b border-stone-100">
         <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-16 items-center">
+                <!-- Logo clicks back to top -->
                 <a href="#" class="serif text-xl font-bold text-stone-700 tracking-tighter hover:text-orange-700 transition-colors">AI Lounge</a>
                 <div class="hidden md:flex space-x-8 text-sm font-medium text-stone-500">
                     <a href="#overview" class="hover:text-orange-700">開催概要</a>
@@ -78,8 +78,8 @@
     <header class="relative bg-orange-50/30 pt-24 pb-16 overflow-hidden">
         <div class="absolute inset-0 opacity-5 pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/paper.png')]"></div>
         <div class="max-w-4xl mx-auto px-4 text-center relative">
-            <!-- 修正：ONLINE座談会を大きく -->
-            <span class="inline-block py-2 px-6 rounded-full bg-orange-100 text-orange-800 text-lg font-bold tracking-widest mb-8 shadow-sm">ONLINE座談会</span>
+            <!-- ONLINE座談会を表示大きく -->
+            <span class="inline-block py-3 px-10 rounded-full bg-orange-100 text-orange-800 text-2xl font-bold tracking-widest mb-10 shadow-sm border border-orange-200">ONLINE座談会</span>
             <h1 class="text-4xl sm:text-5xl md:text-6xl font-serif text-stone-800 leading-tight mb-8">
                 AIを、ただの道具にするのは<br class="hidden sm:block">もったいない。
             </h1>
@@ -93,22 +93,21 @@
     <!-- Overview Bar -->
     <section id="overview" class="bg-white border-y border-stone-100 relative z-20 shadow-sm">
         <div class="max-w-6xl mx-auto px-4">
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 py-10 text-center">
-                <div class="border-r border-stone-100 last:border-0">
-                    <!-- 修正：ラベルを日本語に、日程を更新 -->
-                    <div class="text-orange-700 text-xs font-bold tracking-[0.2em] mb-2">日付</div>
-                    <div class="text-lg font-bold text-stone-800">3月7日(土)・3月8日(日)</div>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 py-12 text-center">
+                <div class="border-r border-stone-100 last:border-0 px-2">
+                    <div class="text-orange-700 text-xs font-bold tracking-[0.2em] mb-3">日付</div>
+                    <div class="text-lg font-bold text-stone-800 leading-tight">3月7日(土)<br>3月8日(日)</div>
                 </div>
-                <div class="border-r border-stone-100 md:last:border-r last:border-0">
-                    <div class="text-orange-700 text-xs font-bold tracking-[0.2em] mb-2">時間</div>
+                <div class="border-r border-stone-100 md:last:border-r last:border-0 px-2">
+                    <div class="text-orange-700 text-xs font-bold tracking-[0.2em] mb-3">時間</div>
                     <div class="text-lg font-bold text-stone-800">20:00 - 21:30</div>
                 </div>
-                <div class="border-r border-stone-100 last:border-0">
-                    <div class="text-orange-700 text-xs font-bold tracking-[0.2em] mb-2">場所</div>
+                <div class="border-r border-stone-100 last:border-0 px-2">
+                    <div class="text-orange-700 text-xs font-bold tracking-[0.2em] mb-3">場所</div>
                     <div class="text-lg font-bold text-stone-800">Google Meet</div>
                 </div>
-                <div class="last:border-0">
-                    <div class="text-orange-700 text-xs font-bold tracking-[0.2em] mb-2">参加費</div>
+                <div class="last:border-0 px-2">
+                    <div class="text-orange-700 text-xs font-bold tracking-[0.2em] mb-3">参加費</div>
                     <div class="text-lg font-bold text-stone-800">3,300円 <span class="text-xs font-normal text-stone-400">税込</span></div>
                 </div>
             </div>
@@ -153,7 +152,7 @@
         </div>
     </section>
 
-    <!-- Experience Section (Mock Chat Simulation) -->
+    <!-- Experience Section -->
     <section id="experience" class="py-24 bg-white shadow-inner">
         <div class="max-w-6xl mx-auto px-4">
             <div class="text-center mb-16">
@@ -162,7 +161,6 @@
             </div>
 
             <div class="grid md:grid-cols-3 gap-8">
-                <!-- Scenarios -->
                 <div class="space-y-4">
                     <h3 class="font-bold text-stone-700 mb-2 border-b border-stone-100 pb-2 text-xs tracking-widest uppercase">相談したいこと</h3>
                     <button onclick="simulateChat('dinner')" class="scenario-btn w-full text-left p-5 rounded-2xl border border-stone-100 hover:border-orange-200 hover:bg-orange-50 transition group bg-white shadow-sm">
@@ -191,7 +189,7 @@
         </div>
     </section>
 
-    <!-- Menu Section (4 items) -->
+    <!-- Menu Section -->
     <section id="menu" class="py-24 max-w-4xl mx-auto px-4">
         <h2 class="text-3xl font-serif text-center text-stone-800 mb-16">当日のラウンジ・メニュー</h2>
         <div class="relative pl-10 border-l-2 border-orange-100 space-y-16">
@@ -231,12 +229,12 @@
     </section>
 
     <!-- Profile Section -->
-     <section id="host" class="py-24 bg-stone-100">
+    <section id="host" class="py-24 bg-stone-100">
         <div class="max-w-5xl mx-auto px-4">
             <div class="bg-white rounded-[3rem] shadow-sm overflow-hidden flex flex-col md:flex-row items-stretch border border-stone-200">
-                <div class="md:w-2/5 relative min-h-[300px] bg-stone-200">
-                    <!-- 修正：主宰者の写真参照。同じフォルダに画像を置いてください -->
-                    <img src="profile_v3_minimal_circle.png" alt="主宰者プロフィール画像" class="w-full h-full object-cover themed-profile-img" onerror="this.style.display='none';">
+                <div class="md:w-2/5 relative min-h-[300px] bg-stone-200 flex items-center justify-center">
+                    <!-- 画像名を .png に変更 -->
+                    <img src="profile_v3_minimal_circle.png" alt="主宰者プロフィール画像" class="w-full h-full object-cover themed-profile-img" onerror="this.src='';">
                     <div class="absolute inset-0 bg-orange-900/10 mix-blend-overlay"></div>
                 </div>
                 <div class="p-12 md:w-3/5 flex flex-col justify-center">
@@ -252,7 +250,7 @@
         </div>
     </section>
 
-    <!-- Registration Section (Notion Form Placeholder) -->
+    <!-- Registration Section -->
     <section id="register" class="py-24 max-w-4xl mx-auto px-4">
         <div class="text-center mb-12">
             <h2 class="text-3xl font-serif text-stone-800 mb-4">お席を予約する</h2>
@@ -260,56 +258,67 @@
         </div>
 
         <div class="notion-form-wrapper">
-            <!-- 【重要】Notion フォームの共有URLを src="ここに貼り付け" してください -->
-            <iframe src="https://doublemoon.notion.site/ebd//8e925d0756098267a4f2814fdbb8f920" width="100%" height="1800" frameborder="0" allowfullscreen />
+            <!-- 修正：iframeの閉じタグを正しく記述 -->
+            <iframe 
+                src="https://doublemoon.notion.site/ebd//8e925d0756098267a4f2814fdbb8f920" 
+                style="width: 100%; height:2000px; border: none;"
+                allow="autoplay"
+            ></iframe>
         </div>
         
         <div class="mt-12 max-w-2xl mx-auto text-center">
-            <div class="bg-white p-8 rounded-[2rem] border border-stone-100 shadow-sm">
-                <p class="text-stone-600 text-sm leading-relaxed mb-4">
-                    主宰者より確認のメールが入りますのでお待ちください。
+            <div class="bg-white p-8 rounded-[2rem] border border-stone-100 shadow-sm text-left">
+                <p class="text-stone-600 text-sm leading-relaxed mb-6 text-center">
+                    ご予約を受け付けました。<br>主宰者より確認のメールが入りますのでお待ちください。
                 </p>
-                <div class="bg-stone-50 p-4 rounded-xl">
-                    <p class="text-xs text-stone-400 mb-2 leading-relaxed">
+                <div class="bg-stone-50 p-6 rounded-xl border border-stone-100">
+                    <p class="text-xs text-stone-400 mb-3 leading-relaxed">
                         メールが届かない場合は、以下のメールアドレスからのメールが迷惑メールに入っている可能性があります。
                     </p>
-                    <p class="font-bold text-stone-800 select-all">tomo@doublemoon.site</p>
+                    <p class="font-bold text-stone-800 select-all text-center text-lg">tomo@doublemoon.site</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- フッター修正 -->
+    <!-- Footer -->
     <footer class="bg-stone-900 text-stone-500 py-16 text-center text-[10px] tracking-[0.3em] uppercase">
-        <div class="serif text-xl text-white normal-case tracking-normal mb-6 tracking-normal">AI Lounge</div>
+        <div class="serif text-xl text-white normal-case tracking-normal mb-6">AI Lounge</div>
         <p>Copyright©2026 Doublemoon All Rights Reserved.</p>
     </footer>
 
     <script>
         // --- Radar Chart Logic ---
-        const chartCtx = document.getElementById('mindsetChart').getContext('2d');
-        let mindsetChart = new Chart(chartCtx, {
-            type: 'radar',
-            data: {
-                labels: ['効率性', '共感力', '創造性', '安心感', '正確さ', '楽しさ'],
-                datasets: [{
-                    label: 'これからの相棒',
-                    data: [7, 9, 9, 8, 8, 9],
-                    backgroundColor: 'rgba(251, 146, 60, 0.1)',
-                    borderColor: '#ea580c',
-                    pointBackgroundColor: '#ea580c',
-                    borderWidth: 2
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                scales: { r: { angleLines: { color: '#f5f5f4' }, grid: { color: '#f5f5f4' }, suggestedMin: 0, suggestedMax: 10, ticks: { display: false } } },
-                plugins: { legend: { display: false } }
-            }
-        });
+        let mindsetChart;
+        
+        // チャートの初期化
+        function initChart() {
+            const chartCtx = document.getElementById('mindsetChart').getContext('2d');
+            mindsetChart = new Chart(chartCtx, {
+                type: 'radar',
+                data: {
+                    labels: ['効率性', '共感力', '創造性', '安心感', '正確さ', '楽しさ'],
+                    datasets: [{
+                        label: 'これからの相棒',
+                        data: [7, 9, 9, 8, 8, 9],
+                        backgroundColor: 'rgba(251, 146, 60, 0.1)',
+                        borderColor: '#ea580c',
+                        pointBackgroundColor: '#ea580c',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: { r: { angleLines: { color: '#f5f5f4' }, grid: { color: '#f5f5f4' }, suggestedMin: 0, suggestedMax: 10, ticks: { display: false } } },
+                    plugins: { legend: { display: false } }
+                }
+            });
+        }
 
+        // ボタン操作によるアップデート
         function updateChart(mode) {
+            if (!mindsetChart) return;
             const toolBtn = document.getElementById('btn-tool');
             const partnerBtn = document.getElementById('btn-partner');
             if (mode === 'tool') {
@@ -354,21 +363,23 @@
             const data = scenarios[key];
             chatArea.innerHTML = '';
             
-            // User Bubble
             chatArea.innerHTML += `<div class="flex justify-end mb-6"><div class="bg-stone-200 p-4 rounded-2xl rounded-tr-none text-stone-700 text-sm max-w-[80%] shadow-sm">${data.user}</div></div>`;
             
-            // Tool Response
             setTimeout(() => {
                 chatArea.innerHTML += `<div class="flex items-start mb-6"><div class="w-10 h-10 rounded-full bg-stone-100 flex items-center justify-center text-xl mr-3 grayscale opacity-50 shadow-sm">🤖</div><div class="bg-white border border-stone-100 p-4 rounded-2xl rounded-tl-none text-stone-400 text-sm max-w-[85%] leading-relaxed shadow-sm"><span class="text-[10px] font-bold block mb-1 uppercase tracking-wider">Tool Mode</span>${data.tool}</div></div>`;
                 chatArea.scrollTop = chatArea.scrollHeight;
             }, 600);
             
-            // Partner Response
             setTimeout(() => {
                 chatArea.innerHTML += `<div class="flex items-start mb-6"><div class="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center text-xl mr-3 shadow-sm">✨</div><div class="bg-orange-50 border border-orange-100 p-5 rounded-2xl rounded-tl-none text-stone-800 text-sm max-w-[85%] leading-relaxed shadow-sm"><span class="text-[10px] font-bold block mb-1 text-orange-700 uppercase tracking-wider">Partner Mode</span>${data.partner}</div></div>`;
                 chatArea.scrollTop = chatArea.scrollHeight;
             }, 1800);
         }
+
+        // ページロード時に初期化
+        window.addEventListener('DOMContentLoaded', () => {
+            initChart();
+        });
     </script>
 </body>
 </html>
