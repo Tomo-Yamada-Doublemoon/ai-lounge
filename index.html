@@ -46,7 +46,7 @@
         /* Notion Form Container Styling */
         .notion-form-wrapper {
             width: 100%;
-            min-height: 600px; /* フォームの長さに合わせて調整してください */
+            min-height: 600px;
             border-radius: 2rem;
             overflow: hidden;
             background: white;
@@ -78,7 +78,8 @@
     <header class="relative bg-orange-50/30 pt-24 pb-16 overflow-hidden">
         <div class="absolute inset-0 opacity-5 pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/paper.png')]"></div>
         <div class="max-w-4xl mx-auto px-4 text-center relative">
-            <span class="inline-block py-1 px-4 rounded-full bg-orange-100 text-orange-800 text-xs font-bold tracking-widest mb-6 uppercase">ONLINE座談会</span>
+            <!-- 修正：ONLINE座談会を大きく -->
+            <span class="inline-block py-2 px-6 rounded-full bg-orange-100 text-orange-800 text-lg font-bold tracking-widest mb-8 shadow-sm">ONLINE座談会</span>
             <h1 class="text-4xl sm:text-5xl md:text-6xl font-serif text-stone-800 leading-tight mb-8">
                 AIを、ただの道具にするのは<br class="hidden sm:block">もったいない。
             </h1>
@@ -92,21 +93,22 @@
     <!-- Overview Bar -->
     <section id="overview" class="bg-white border-y border-stone-100 relative z-20 shadow-sm">
         <div class="max-w-6xl mx-auto px-4">
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 py-8 text-center">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 py-10 text-center">
                 <div class="border-r border-stone-100 last:border-0">
-                    <div class="text-orange-700 text-[10px] font-bold tracking-[0.2em] uppercase mb-1">Date</div>
-                    <div class="text-lg font-bold text-stone-800">2月27日(金)</div>
+                    <!-- 修正：ラベルを日本語に、日程を更新 -->
+                    <div class="text-orange-700 text-xs font-bold tracking-[0.2em] mb-2">日付</div>
+                    <div class="text-lg font-bold text-stone-800">3月7日(土)・3月8日(日)</div>
                 </div>
                 <div class="border-r border-stone-100 md:last:border-r last:border-0">
-                    <div class="text-orange-700 text-[10px] font-bold tracking-[0.2em] uppercase mb-1">Time</div>
+                    <div class="text-orange-700 text-xs font-bold tracking-[0.2em] mb-2">時間</div>
                     <div class="text-lg font-bold text-stone-800">20:00 - 21:30</div>
                 </div>
                 <div class="border-r border-stone-100 last:border-0">
-                    <div class="text-orange-700 text-[10px] font-bold tracking-[0.2em] uppercase mb-1">Place</div>
+                    <div class="text-orange-700 text-xs font-bold tracking-[0.2em] mb-2">場所</div>
                     <div class="text-lg font-bold text-stone-800">Google Meet</div>
                 </div>
                 <div class="last:border-0">
-                    <div class="text-orange-700 text-[10px] font-bold tracking-[0.2em] uppercase mb-1">Fee</div>
+                    <div class="text-orange-700 text-xs font-bold tracking-[0.2em] mb-2">参加費</div>
                     <div class="text-lg font-bold text-stone-800">3,300円 <span class="text-xs font-normal text-stone-400">税込</span></div>
                 </div>
             </div>
@@ -160,6 +162,7 @@
             </div>
 
             <div class="grid md:grid-cols-3 gap-8">
+                <!-- Scenarios -->
                 <div class="space-y-4">
                     <h3 class="font-bold text-stone-700 mb-2 border-b border-stone-100 pb-2 text-xs tracking-widest uppercase">相談したいこと</h3>
                     <button onclick="simulateChat('dinner')" class="scenario-btn w-full text-left p-5 rounded-2xl border border-stone-100 hover:border-orange-200 hover:bg-orange-50 transition group bg-white shadow-sm">
@@ -231,8 +234,9 @@
     <section id="host" class="py-24 bg-stone-100">
         <div class="max-w-5xl mx-auto px-4">
             <div class="bg-white rounded-[3rem] shadow-sm overflow-hidden flex flex-col md:flex-row items-stretch border border-stone-200">
-                <div class="md:w-2/5 relative">
-                    <img src="profile_v3_minimal_circle.jpg" alt="Profile" class="w-full h-full object-cover themed-profile-img" onerror="this.src='https://images.unsplash.com/photo-1544717297-fa95b3ee51f3?q=80&w=400&h=600&auto=format&fit=crop';">
+                <div class="md:w-2/5 relative min-h-[300px] bg-stone-200">
+                    <!-- 修正：主宰者の写真参照。同じフォルダに画像を置いてください -->
+                    <img src="profile_v3_minimal_circle.jpg" alt="主宰者プロフィール画像" class="w-full h-full object-cover themed-profile-img" onerror="this.style.display='none';">
                     <div class="absolute inset-0 bg-orange-900/10 mix-blend-overlay"></div>
                 </div>
                 <div class="p-12 md:w-3/5 flex flex-col justify-center">
@@ -264,16 +268,25 @@
             ></iframe>
         </div>
         
-        <div class="mt-8 text-center text-xs text-stone-400 leading-relaxed">
-            <p>※ご予約完了後、主宰者より確認のメールが入りますのでお待ちください。</p>
-            <p>メールが届かない場合は、迷惑メールフォルダをご確認いただくか、<br>
-            <span class="font-bold">tomo@doublemoon.site</span> まで直接ご連絡ください。</p>
+        <div class="mt-12 max-w-2xl mx-auto text-center">
+            <div class="bg-white p-8 rounded-[2rem] border border-stone-100 shadow-sm">
+                <p class="text-stone-600 text-sm leading-relaxed mb-4">
+                    主宰者より確認のメールが入りますのでお待ちください。
+                </p>
+                <div class="bg-stone-50 p-4 rounded-xl">
+                    <p class="text-xs text-stone-400 mb-2 leading-relaxed">
+                        メールが届かない場合は、以下のメールアドレスからのメールが迷惑メールに入っている可能性があります。
+                    </p>
+                    <p class="font-bold text-stone-800 select-all">tomo@doublemoon.site</p>
+                </div>
+            </div>
         </div>
     </section>
 
+    <!-- フッター修正 -->
     <footer class="bg-stone-900 text-stone-500 py-16 text-center text-[10px] tracking-[0.3em] uppercase">
-        <div class="serif text-xl text-white normal-case tracking-normal mb-6">AI Lounge</div>
-        <p>&copy; 2026 Kikkake Producer. All Rights Reserved.</p>
+        <div class="serif text-xl text-white normal-case tracking-normal mb-6 tracking-normal">AI Lounge</div>
+        <p>Copyright©2026 Doublemoon All Rights Reserved.</p>
     </footer>
 
     <script>
@@ -344,11 +357,17 @@
             const chatArea = document.getElementById('chat-area');
             const data = scenarios[key];
             chatArea.innerHTML = '';
+            
+            // User Bubble
             chatArea.innerHTML += `<div class="flex justify-end mb-6"><div class="bg-stone-200 p-4 rounded-2xl rounded-tr-none text-stone-700 text-sm max-w-[80%] shadow-sm">${data.user}</div></div>`;
+            
+            // Tool Response
             setTimeout(() => {
                 chatArea.innerHTML += `<div class="flex items-start mb-6"><div class="w-10 h-10 rounded-full bg-stone-100 flex items-center justify-center text-xl mr-3 grayscale opacity-50 shadow-sm">🤖</div><div class="bg-white border border-stone-100 p-4 rounded-2xl rounded-tl-none text-stone-400 text-sm max-w-[85%] leading-relaxed shadow-sm"><span class="text-[10px] font-bold block mb-1 uppercase tracking-wider">Tool Mode</span>${data.tool}</div></div>`;
                 chatArea.scrollTop = chatArea.scrollHeight;
             }, 600);
+            
+            // Partner Response
             setTimeout(() => {
                 chatArea.innerHTML += `<div class="flex items-start mb-6"><div class="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center text-xl mr-3 shadow-sm">✨</div><div class="bg-orange-50 border border-orange-100 p-5 rounded-2xl rounded-tl-none text-stone-800 text-sm max-w-[85%] leading-relaxed shadow-sm"><span class="text-[10px] font-bold block mb-1 text-orange-700 uppercase tracking-wider">Partner Mode</span>${data.partner}</div></div>`;
                 chatArea.scrollTop = chatArea.scrollHeight;
