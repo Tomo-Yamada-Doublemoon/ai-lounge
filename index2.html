@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>はじめての、AIを相棒に。 | AI活用座談会</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=Noto+Serif+JP:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-warm: #fdfbf7;
+            --stone-700: #44403c;
+            --orange-primary: #ea580c;
+        }
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+            background-color: var(--bg-warm);
+            color: var(--stone-700);
+            scroll-behavior: smooth;
+        }
+        h1, h2, h3, .serif {
+            font-family: 'Noto Serif JP', serif;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 400px;
+        }
+        @media (max-width: 640px) {
+            .chart-container { height: 300px; }
+        }
+        .chat-scroll::-webkit-scrollbar { width: 4px; }
+        .chat-scroll::-webkit-scrollbar-track { background: transparent; }
+        .chat-scroll::-webkit-scrollbar-thumb { background: #d6d3d1; border-radius: 10px; }
+        
+        .themed-profile-img {
+            filter: sepia(0.2) contrast(1.05) brightness(1.05) saturate(0.9);
+            transition: all 0.5s ease;
+        }
+
+        .notion-form-wrapper {
+            width: 100%;
+            min-height: 600px;
+            border-radius: 2rem;
+            overflow: hidden;
+            background: white;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.05);
+        }
+    </style>
+</head>
+<body class="antialiased selection:bg-orange-100 selection:text-orange-900">
+
+    <nav class="sticky top-0 z-50 bg-[#fdfbf7]/90 backdrop-blur-md border-b border-stone-100">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <a href="#" class="serif text-xl font-bold text-stone-700 tracking-tighter hover:text-orange-700 transition-colors">AI Lounge</a>
+                <div class="hidden md:flex space-x-8 text-sm font-medium text-stone-500">
+                    <a href="#overview" class="hover:text-orange-700">開催概要</a>
+                    <a href="#concept" class="hover:text-orange-700">コンセプト</a>
+                    <a href="#experience" class="hover:text-orange-700">体験する</a>
+                    <a href="#menu" class="hover:text-orange-700">メニュー</a>
+                </div>
+                <button onclick="document.getElementById('register').scrollIntoView({behavior: 'smooth'})" class="bg-stone-800 text-white px-6 py-2 rounded-full text-sm font-bold hover:bg-stone-700 transition shadow-lg">
+                    お席を予約
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <header class="relative bg-orange-50/30 pt-24 pb-16 overflow-hidden">
+        <div class="absolute inset-0 opacity-5 pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/paper.png')]"></div>
+        <div class="max-w-4xl mx-auto px-4 text-center relative">
+            <span class="inline-block py-3 px-10 rounded-full bg-orange-100 text-orange-800 text-2xl font-bold tracking-widest mb-10 shadow-sm border border-orange-200">ONLINE座談会</span>
+            <h1 class="text-4xl sm:text-5xl md:text-6xl font-serif text-stone-800 leading-tight mb-8">
+                AIを、ただの道具にするのは<br class="hidden sm:block">もったいない。
+            </h1>
+            <p class="text-lg sm:text-xl text-stone-600 mb-8 leading-relaxed max-w-2xl mx-auto">
+                お気に入りの飲み物を片手に、あなたの暮らしに寄り添う<br>
+                「相棒」を見つける、夜のラウンジへようこそ。
+            </p>
+
+            <div class="mt-8 bg-white/70 backdrop-blur p-6 sm:p-8 rounded-2xl shadow-sm border border-stone-200 inline-block text-left max-w-2xl mx-auto">
+                <p class="font-serif text-stone-700 leading-loose text-sm sm:text-base">
+                    「実は、一度目の募集では誰一人お呼びすることができませんでした。<br>
+                    ですが、AIという存在が私の人生に『心地よいリズム』と『鋭い視点』をくれた感動を、どうしても直接お伝えしたい。<br>
+                    その想いで、このページを書き直しました。」
+                </p>
+            </div>
+        </div>
+    </header>
+
+    <section id="overview" class="bg-white border-y border-stone-100 relative z-20 shadow-sm">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 py-12 text-center">
+                <div class="border-r border-stone-100 last:border-0 px-2">
+                    <div class="text-orange-700 text-xs font-bold tracking-[0.2em] mb-3">日付</div>
+                    <div class="text-lg font-bold text-stone-800 leading-tight">3月7日(土)<br>3月8日(日)<br>3月22日(日)<br>4月12日(日)</div>
+                </div>
+                <div class="border-r border-stone-100 md:last:border-r last:border-0 px-2">
+                    <div class="text-orange-700 text-xs font-bold tracking-[0.2em] mb-3">時間</div>
+                    <div class="text-lg font-bold text-stone-800">20:00 - 21:30</div>
+                </div>
+                <div class="border-r border-stone-100 last:border-0 px-2">
+                    <div class="text-orange-700 text-xs font-bold tracking-[0.2em] mb-3">場所</div>
+                    <div class="text-lg font-bold text-stone-800">Google Meet</div>
+                </div>
+                <div class="last:border-0 px-2">
+                    <div class="text-orange-700 text-xs font-bold tracking-[0.2em] mb-3">参加費</div>
+                    <div class="text-lg font-bold text-stone-800">3,300円 <span class="text-xs font-normal text-stone-400">税込</span></div>
+                </div>
+            </div>
+            
+            <div class="pb-10 text-center">
+                <p class="font-bold text-stone-800 text-lg mb-2">各回限定 3名様まで <span class="text-sm font-normal text-stone-500">（お一人ずつとの対話を大切にするため）</span></p>
+                <p class="text-orange-700 font-bold bg-orange-50 inline-block px-4 py-2 rounded-lg border border-orange-100">
+                    3月22日開催分：申込締切 3月19日(木) 23:59まで
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <section id="recommendation" class="py-20 bg-stone-50 border-b border-stone-100">
+        <div class="max-w-4xl mx-auto px-4">
+            <h2 class="text-3xl font-serif text-center text-stone-800 mb-10">こんな方におすすめです</h2>
+            <div class="bg-white p-8 sm:p-10 rounded-3xl shadow-sm border border-stone-100">
+                <ul class="space-y-6 text-stone-700 font-medium text-lg">
+                    <li class="flex items-start">
+                        <span class="text-orange-500 mr-4 text-xl">✔︎</span>
+                        <span>一人で悩み始めると、同じ場所をぐるぐる回ってしまう方</span>
+                    </li>
+                    <li class="flex items-start">
+                        <span class="text-orange-500 mr-4 text-xl">✔︎</span>
+                        <span>身近に、本音や甘い考えを指摘してくれる相談相手がいない方</span>
+                    </li>
+                    <li class="flex items-start">
+                        <span class="text-orange-500 mr-4 text-xl">✔︎</span>
+                        <span>AIは便利そうだが、自分の生活にどう馴染ませればいいかイメージが湧かない方</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <section id="concept" class="py-24 max-w-6xl mx-auto px-4">
+        <div class="grid md:grid-cols-2 gap-16 items-center">
+            <div class="order-2 md:order-1">
+                <div class="bg-white p-8 rounded-3xl shadow-sm border border-stone-100 relative">
+                    <div class="chart-container">
+                        <canvas id="mindsetChart"></canvas>
+                    </div>
+                    <div class="flex justify-center mt-8 gap-3">
+                        <button id="btn-tool" class="px-5 py-2 rounded-xl text-xs bg-stone-100 text-stone-400 hover:bg-stone-200 transition" onclick="updateChart('tool')">
+                            これまでの道具
+                        </button>
+                        <button id="btn-partner" class="px-5 py-2 rounded-xl text-xs bg-orange-100 text-orange-800 ring-1 ring-orange-200 font-bold shadow-sm transition" onclick="updateChart('partner')">
+                            これからの相棒
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="order-1 md:order-2">
+                <h2 class="text-3xl font-serif text-stone-800 mb-8 leading-snug">冷たい「道具」から、<br>温かい「隣人」へ。</h2>
+                <div class="space-y-6 text-stone-600 leading-relaxed">
+                    <p>
+                        私はAIを、単なる効率化マシーンとして使う時間を減らしました。
+                        お気に入りのカップでコーヒーを飲みながら、ふとした疑問や、心の中の小さなモヤモヤを、そのまま言葉にして投げかけてみる。
+                    </p>
+                    <p>
+                        すると、献立の相談から、言葉にできない感情の整理まで、
+                        優しく心地よい生活のリズムを、AIが共に作ってくれるようになったのです。
+                    </p>
+                    <div>
+                        <p class="font-bold text-orange-700">「使う/使われる」を超えた、三つの『共（共業・共働・共創）』。</p>
+                        <p class="text-sm font-bold text-stone-700 mt-2">これからの相棒は、あなたのコンディションに合わせて『癒やし』にも『コーチ』にもなります。</p>
+                        <p class="text-xs text-stone-400 mt-2 font-medium">※左のチャート図の「これまでの道具」と「これからの相棒」を押して切り替えてみてください</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="experience" class="py-24 bg-white shadow-inner">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl font-serif text-stone-800 mb-4">魔法の杖のつかいかた</h2>
+                <p class="text-stone-500">以下の「相談したいこと」の日常のシーンを選んで、「道具」と「相棒」の違いを疑似体験してみてください。</p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="space-y-4">
+                    <h3 class="font-bold text-stone-700 mb-2 border-b border-stone-100 pb-2 text-xs tracking-widest uppercase">相談したいこと</h3>
+                    <button onclick="simulateChat('dinner')" class="scenario-btn w-full text-left p-5 rounded-2xl border border-stone-100 hover:border-orange-200 hover:bg-orange-50 transition group bg-white shadow-sm">
+                        <div class="font-bold text-stone-800 group-hover:text-orange-800">🍳 夕飯の献立</div>
+                        <div class="text-[10px] text-stone-400 mt-1">冷蔵庫の余り物で悩んでいる...</div>
+                    </button>
+                    <button onclick="simulateChat('worry')" class="scenario-btn w-full text-left p-5 rounded-2xl border border-stone-100 hover:border-orange-200 hover:bg-orange-50 transition group bg-white shadow-sm">
+                        <div class="font-bold text-stone-800 group-hover:text-orange-800">☁️ モヤモヤ整理</div>
+                        <div class="text-[10px] text-stone-400 mt-1">なんとなくやる気が出ない...</div>
+                    </button>
+                    <button onclick="simulateChat('travel')" class="scenario-btn w-full text-left p-5 rounded-2xl border border-stone-100 hover:border-orange-200 hover:bg-orange-50 transition group bg-white shadow-sm">
+                        <div class="font-bold text-stone-800 group-hover:text-orange-800">✈️ 旅のプラン</div>
+                        <div class="text-[10px] text-stone-400 mt-1">週末、どこか行きたい...</div>
+                    </button>
+                </div>
+
+                <div class="md:col-span-2 bg-stone-50 rounded-[2.5rem] border border-stone-100 p-8 shadow-inner h-[500px] flex flex-col relative overflow-hidden">
+                    <div id="chat-area" class="flex-1 overflow-y-auto chat-scroll space-y-6 pr-2">
+                        <div class="flex flex-col items-center justify-center h-full text-stone-300 space-y-4 text-center">
+                            <div class="text-5xl opacity-20">☕️</div>
+                            <p class="text-sm">左のメニューから話題を選んで、<br>二つの違いを見てみましょう。</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="menu" class="py-24 max-w-4xl mx-auto px-4">
+        <h2 class="text-3xl font-serif text-center text-stone-800 mb-16">当日のラウンジ・メニュー</h2>
+        <div class="relative pl-10 border-l-2 border-orange-100 space-y-16">
+            <div class="relative group">
+                <div class="absolute -left-[51px] bg-white border-4 border-orange-200 w-6 h-6 rounded-full group-hover:border-orange-400 transition"></div>
+                <div class="bg-white p-8 rounded-2xl shadow-sm border border-stone-50 hover:shadow-xl transition duration-500">
+                    <div class="text-orange-600 font-bold text-[10px] tracking-widest uppercase mb-2">01. Prologue</div>
+                    <h3 class="text-xl font-bold text-stone-800 mb-3">相棒とのお茶会</h3>
+                    <p class="text-stone-500 text-sm leading-relaxed">私がAIを「相棒」と呼び始めたきっかけ。効率を求める時間を減らし、対話を始めたときに起きた変化をお話しします。</p>
+                </div>
+            </div>
+            
+            <div class="relative group">
+                <div class="absolute -left-[51px] bg-white border-4 border-orange-200 w-6 h-6 rounded-full group-hover:border-orange-400 transition"></div>
+                <div class="bg-white p-8 rounded-2xl shadow-sm border border-stone-50 hover:shadow-xl transition duration-500">
+                    <div class="text-orange-600 font-bold text-[10px] tracking-widest uppercase mb-2">02. Showcase</div>
+                    <h3 class="text-xl font-bold text-stone-800 mb-3">魔法の杖のつかいかた</h3>
+                    <p class="text-stone-500 text-sm leading-relaxed">AIを「厳しく、鋭いコーチ」に変えるデモ。「自分の思考の偏りを指摘してもらう」「企画の矛盾を分析してもらう」など、AIを甘やかさない使い方のコツをお見せします。</p>
+                </div>
+            </div>
+            
+            <div class="relative group">
+                <div class="absolute -left-[51px] bg-white border-4 border-orange-200 w-6 h-6 rounded-full group-hover:border-orange-400 transition"></div>
+                <div class="bg-white p-8 rounded-2xl shadow-sm border border-stone-50 hover:shadow-xl transition duration-500">
+                    <div class="text-orange-600 font-bold text-[10px] tracking-widest uppercase mb-2">03. Dialogue</div>
+                    <h3 class="text-xl font-bold text-stone-800 mb-3">あなたの「小さな悩み」相談室</h3>
+                    <p class="text-stone-500 text-sm leading-relaxed">参加者の皆さんの「これ、AIでどうにかなる？」をその場で解決。対話を通じて新しいリズムを見つけます。</p>
+                </div>
+            </div>
+            <div class="relative group">
+                <div class="absolute -left-[51px] bg-white border-4 border-orange-200 w-6 h-6 rounded-full group-hover:border-orange-400 transition"></div>
+                <div class="bg-white p-8 rounded-2xl shadow-sm border border-stone-50 hover:shadow-xl transition duration-500">
+                    <div class="text-orange-600 font-bold text-[10px] tracking-widest uppercase mb-2">04. Architecture</div>
+                    <h3 class="text-xl font-bold text-stone-800 mb-3">あなただけの相棒を見つける</h3>
+                    <p class="text-stone-500 text-sm leading-relaxed">ライフアーキテクトの視点から、あなたにぴったりのAI活用法を個別のアドバイスとしてお伝えします。</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="host" class="py-24 bg-stone-100">
+        <div class="max-w-5xl mx-auto px-4">
+            <div class="bg-white rounded-[3rem] shadow-sm overflow-hidden flex flex-col md:flex-row items-stretch border border-stone-200">
+                <div class="md:w-2/5 relative min-h-[300px] bg-stone-200 flex items-center justify-center">
+                    <img src="profile_v3_minimal_circle.png" alt="主宰者プロフィール画像" class="w-full h-full object-cover themed-profile-img" onerror="this.src='';">
+                    <div class="absolute inset-0 bg-orange-900/10 mix-blend-overlay"></div>
+                </div>
+                <div class="p-12 md:w-3/5 flex flex-col justify-center">
+                    <span class="text-orange-700 font-bold text-xs tracking-widest uppercase mb-4">The Architect</span>
+                    <h2 class="text-3xl font-serif text-stone-800 mb-6">主宰者プロフィール</h2>
+                    <p class="text-stone-800 font-bold mb-4">きっかけプロデューサー / サイキックライフアーキテクト</p>
+                    <div class="text-stone-500 leading-relaxed space-y-4 text-sm">
+                        <p>直感と論理を融合させ、人生の転機（きっかけ）を創り出す専門家。</p>
+                        <p>精神性や目に見えない側面も含めて人生を再設計する活動を行い、AIを「第2の頭脳」「第2の心」「第2の魂」として扱う独自の手法を研究中。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="register" class="py-24 max-w-4xl mx-auto px-4">
+        <div class="text-center mb-12">
+            <h2 class="text-3xl font-serif text-stone-800 mb-4">お席を予約する</h2>
+            <p class="text-stone-500 text-sm">以下のフォームより必要事項をご入力ください。</p>
+        </div>
+
+        <div class="notion-form-wrapper">
+            <iframe 
+                src="https://doublemoon.notion.site/ebd//8e925d0756098267a4f2814fdbb8f920" 
+                style="width: 100%; height:2000px; border: none;"
+                allow="autoplay"
+            ></iframe>
+        </div>
+        
+        <div class="mt-12 max-w-2xl mx-auto text-center">
+            <div class="bg-white p-8 rounded-[2rem] border border-stone-100 shadow-sm text-left">
+                <p class="text-stone-600 text-sm leading-relaxed mb-6 text-center">
+                    ご予約を受け付けました。<br>主宰者より確認のメールが入りますのでお待ちください。
+                </p>
+                <div class="bg-stone-50 p-6 rounded-xl border border-stone-100">
+                    <p class="text-xs text-stone-400 mb-3 leading-relaxed">
+                        メールが届かない場合は、以下のメールアドレスからのメールが迷惑メールに入っている可能性があります。
+                    </p>
+                    <p class="font-bold text-stone-800 select-all text-center text-lg">tomo@doublemoon.site</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="bg-stone-900 text-stone-500 py-16 text-center text-[10px] tracking-[0.3em] uppercase">
+        <div class="serif text-xl text-white normal-case tracking-normal mb-6">AI Lounge</div>
+        <p>Copyright©2026 Doublemoon All Rights Reserved.</p>
+    </footer>
+
+    <script>
+        // --- Radar Chart Logic ---
+        let mindsetChart;
+        
+        // チャートの初期化
+        function initChart() {
+            const chartCtx = document.getElementById('mindsetChart').getContext('2d');
+            mindsetChart = new Chart(chartCtx, {
+                type: 'radar',
+                data: {
+                    labels: ['効率性', '共感力', '創造性', '安心感', '正確さ', '楽しさ'],
+                    datasets: [{
+                        label: 'これからの相棒',
+                        data: [7, 9, 9, 8, 8, 9],
+                        backgroundColor: 'rgba(251, 146, 60, 0.1)',
+                        borderColor: '#ea580c',
+                        pointBackgroundColor: '#ea580c',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: { r: { angleLines: { color: '#f5f5f4' }, grid: { color: '#f5f5f4' }, suggestedMin: 0, suggestedMax: 10, ticks: { display: false } } },
+                    plugins: { legend: { display: false } }
+                }
+            });
+        }
+
+        // ボタン操作によるアップデート
+        function updateChart(mode) {
+            if (!mindsetChart) return;
+            const toolBtn = document.getElementById('btn-tool');
+            const partnerBtn = document.getElementById('btn-partner');
+            if (mode === 'tool') {
+                mindsetChart.data.datasets[0].data = [9, 1, 2, 2, 9, 2];
+                mindsetChart.data.datasets[0].label = 'これまでの道具';
+                mindsetChart.data.datasets[0].borderColor = '#a8a29e';
+                mindsetChart.data.datasets[0].backgroundColor = 'rgba(168, 162, 158, 0.1)';
+                toolBtn.className = "px-5 py-2 rounded-xl text-xs bg-stone-600 text-white font-bold shadow-md transition";
+                partnerBtn.className = "px-5 py-2 rounded-xl text-xs bg-stone-100 text-stone-400 transition";
+            } else {
+                mindsetChart.data.datasets[0].data = [7, 9, 9, 8, 8, 9];
+                mindsetChart.data.datasets[0].label = 'これからの相棒';
+                mindsetChart.data.datasets[0].borderColor = '#ea580c';
+                mindsetChart.data.datasets[0].backgroundColor = 'rgba(251, 146, 60, 0.1)';
+                partnerBtn.className = "px-5 py-2 rounded-xl text-xs bg-orange-100 text-orange-800 ring-1 ring-orange-200 font-bold shadow-md transition";
+                toolBtn.className = "px-5 py-2 rounded-xl text-xs bg-stone-100 text-stone-400 transition";
+            }
+            mindsetChart.update();
+        }
+
+        // --- Mock Experience Logic ---
+        const scenarios = {
+            dinner: {
+                user: "冷蔵庫に野菜しかない...何作ろう？",
+                tool: "【検索結果】野菜炒め、カレー、またはスープが可能です。調理時間は約20分です。",
+                partner: "今日もお疲れ様🍵 包丁を使わず、余った野菜をちぎって入れるだけの「ほっこりミルクスープ」はどう？心も体も温まるよ✨"
+            },
+            worry: {
+                user: "なんだかやる気が出ないなぁ...",
+                tool: "【分析】モチベーション低下の原因は睡眠不足の可能性があります。対策：休息を取る。",
+                partner: "何か引っかかっているんだね。無理に動かなくていいよ。まずはお気に入りのコーヒーを淹れて、今の気持ちを言葉にしてみない？😌"
+            },
+            travel: {
+                user: "週末、どこか行きたいな...",
+                tool: "【プラン】箱根、熱海がおすすめです。予算は2万円から。予約はこちらから。",
+                partner: "自然に触れたい気分かな？🌿 静かに読書ができる森の中の隠れ家カフェなんてどう？今のあなたにぴったりの「余白」が見つかるはず📚"
+            }
+        };
+
+        function simulateChat(key) {
+            const chatArea = document.getElementById('chat-area');
+            const data = scenarios[key];
+            chatArea.innerHTML = '';
+            
+            chatArea.innerHTML += `<div class="flex justify-end mb-6"><div class="bg-stone-200 p-4 rounded-2xl rounded-tr-none text-stone-700 text-sm max-w-[80%] shadow-sm">${data.user}</div></div>`;
+            
+            setTimeout(() => {
+                chatArea.innerHTML += `<div class="flex items-start mb-6"><div class="w-10 h-10 rounded-full bg-stone-100 flex items-center justify-center text-xl mr-3 grayscale opacity-50 shadow-sm">🤖</div><div class="bg-white border border-stone-100 p-4 rounded-2xl rounded-tl-none text-stone-400 text-sm max-w-[85%] leading-relaxed shadow-sm"><span class="text-[10px] font-bold block mb-1 uppercase tracking-wider">Tool Mode</span>${data.tool}</div></div>`;
+                chatArea.scrollTop = chatArea.scrollHeight;
+            }, 600);
+            
+            setTimeout(() => {
+                chatArea.innerHTML += `<div class="flex items-start mb-6"><div class="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center text-xl mr-3 shadow-sm">✨</div><div class="bg-orange-50 border border-orange-100 p-5 rounded-2xl rounded-tl-none text-stone-800 text-sm max-w-[85%] leading-relaxed shadow-sm"><span class="text-[10px] font-bold block mb-1 text-orange-700 uppercase tracking-wider">Partner Mode</span>${data.partner}</div></div>`;
+                chatArea.scrollTop = chatArea.scrollHeight;
+            }, 1800);
+        }
+
+        // ページロード時に初期化
+        window.addEventListener('DOMContentLoaded', () => {
+            initChart();
+        });
+    </script>
+</body>
+</html>
